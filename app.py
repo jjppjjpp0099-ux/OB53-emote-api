@@ -515,34 +515,35 @@ async def TcPChaT(ip, port, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event
 
 loop = None
 
-async def perform_emote(team_code: str, uids: list, emote_id: int):
+asynasync def perform_emote(team_code: str, uids: list, emote_id: int):
     global key, iv, region, online_writer, BOT_UID
 
     if online_writer is None:
-        print("Error: Bot not connected")
         return
 
     try:
-        # 1. JOIN SQUAD
+        # Packets ko pehle hi ready kar lete hain
         EM = await GenJoinSquadsPacket(team_code, key, iv)
-        await SEndPacKeT(None, online_writer, 'OnLine', EM)
-        await asyncio.sleep(0.3) 
+        LV = await ExiT(None, key, iv)
 
-        # 2. PERFORM EMOTE
+        # 1. Join Request bhejte hi...
+        await SEndPacKeT(None, online_writer, 'OnLine', EM)
+
+        # 2. Bina ruke Emote bhej dein...
         for uid_str in uids:
             if uid_str and uid_str != '0':
                 uid = int(uid_str)
                 H = await Emote_k(uid, emote_id, key, iv, region)
                 await SEndPacKeT(None, online_writer, 'OnLine', H)
 
-        # 3. LEAVE SQUAD INSTANTLY
-        LV = await ExiT(None, key, iv) 
+        # 3. Aur turant Leave request!
         await SEndPacKeT(None, online_writer, 'OnLine', LV)
         
-        return {"status": "success", "message": "Emote done & left"}
+        return {"status": "success", "message": "Zero-Delay Done"}
 
     except Exception as e:
-        print(f"Failed to perform emote: {str(e)}")
+        print(f"Fast Mode Error: {str(e)}")
+
 
 
 
