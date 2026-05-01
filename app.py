@@ -515,7 +515,7 @@ async def TcPChaT(ip, port, AutHToKen, key, iv, LoGinDaTaUncRypTinG, ready_event
 
 loop = None
 
-asynasync def perform_emote(team_code: str, uids: list, emote_id: int):
+async def perform_emote(team_code: str, uids: list, emote_id: int):
     global key, iv, region, online_writer, BOT_UID
 
     if online_writer is None:
