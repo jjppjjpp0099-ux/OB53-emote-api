@@ -519,30 +519,38 @@ async def perform_emote(team_code: str, uids: list, emote_id: int):
     global key, iv, region, online_writer, BOT_UID
 
     if online_writer is None:
+        print("Bot is offline")
         return
 
     try:
-        # Packets ko pehle hi ready kar lete hain
+        # 1. JOIN SQUAD
         EM = await GenJoinSquadsPacket(team_code, key, iv)
-        LV = await ExiT(None, key, iv)
-
-        # 1. Join Request bhejte hi...
         await SEndPacKeT(None, online_writer, 'OnLine', EM)
+        
+        # 0.2s ka delay zaroori hai taaki server join confirm kare
+        await asyncio.sleep(0.2) 
 
-        # 2. Bina ruke Emote bhej dein...
+        # 2. PERFORM EMOTE
         for uid_str in uids:
             if uid_str and uid_str != '0':
                 uid = int(uid_str)
                 H = await Emote_k(uid, emote_id, key, iv, region)
                 await SEndPacKeT(None, online_writer, 'OnLine', H)
+                # Emote ke beech chhota gap taaki animation trigger ho
+                await asyncio.sleep(0.1)
 
-        # 3. Aur turant Leave request!
+        # 3. LEAVE SQUAD
+        # Emote ke baad 0.1s ruk kar leave packet
+        await asyncio.sleep(0.1)
+        LV = await ExiT(None, key, iv) 
         await SEndPacKeT(None, online_writer, 'OnLine', LV)
         
-        return {"status": "success", "message": "Zero-Delay Done"}
+        print("Sequence Completed: Join -> Emote -> Leave")
+        return {"status": "success"}
 
     except Exception as e:
-        print(f"Fast Mode Error: {str(e)}")
+        print(f"Error in perform_emote: {str(e)}")
+
 
 
 
